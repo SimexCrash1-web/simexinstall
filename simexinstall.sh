@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Warna
+# Color
 BLUE='\033[0;34m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -10,76 +10,96 @@ NC='\033[0m'
 # Welcome
 display_welcome() {
 echo -e ""
-echo -e "${RED} =============================================== ${NC}"
-echo -e "${RED}               AUTO INSTALLER PANEL              ${NC}"
-echo -e "${RED}                 BY SIMEX BACK                 ${NC}"
-echo -e "${RED} =============================================== ${NC}"
+echo -e "${RED}===============================================${NC}"
+echo -e "${RED}            AUTO INSTALLER PANEL              ${NC}"
+echo -e "${RED}               BY THOMZ STORE                 ${NC}"
+echo -e "${RED}===============================================${NC}"
 sleep 3
 }
 
 # Check OS
 check_os() {
-
 source /etc/os-release
 OS=$ID
 VER=$VERSION_ID
 
 if [[ "$OS" == "ubuntu" || "$OS" == "debian" ]]; then
-echo -e "${GREEN}OS Terdeteksi: $OS $VER${NC}"
+echo -e "${GREEN}OS detected: $OS $VER${NC}"
 else
-echo -e "${RED}OS tidak didukung script ini${NC}"
+echo -e "${RED}OS tidak didukung${NC}"
 exit 1
 fi
-
 }
 
-# Check Token
+# Token
 check_token() {
+echo ""
+echo -e "${YELLOW}Masukkan TOKEN installer${NC}"
+read -r USER_TOKEN
 
-echo -e "${YELLOW}Masukkan Token Installer${NC}"
-read -p "TOKEN : " USER_TOKEN
-
-if [ "$USER_TOKEN" = "SimexCogan" ]; then
+if [ "$USER_TOKEN" = "Thomvelz" ]; then
 echo -e "${GREEN}TOKEN VALID${NC}"
-sleep 1
-clear
 else
 echo -e "${RED}TOKEN SALAH${NC}"
 exit 1
 fi
-
+sleep 1
+clear
 }
 
 # Install Panel
 install_panel() {
 
-echo -e "${BLUE}Masukkan Subdomain Panel${NC}"
-read -p "Domain : " domain
+while true
+do
 
-bash <(curl -s https://raw.githubusercontent.com/rafiadrian1/kuliah/main/autoinstall.sh) $domain true admin@gmail.com Simexganteng admin Simex true
+echo ""
+echo "Lanjut install panel? (y/n)"
+read -r install
 
-echo -e ""
+case $install in
+
+y|Y)
+
+echo ""
+read -p "Masukkan Subdomain Panel: " domain
+
+bash <(curl -s https://raw.githubusercontent.com/rafiadrian1/kuliah/main/autoinstall.sh) $domain true admin@gmail.com thomzganteng admin thomz true
+
 echo -e "${GREEN}INSTALL PANEL SELESAI${NC}"
-sleep 2
+break
+;;
+
+n|N)
+return
+;;
+
+*)
+echo "Input salah"
+;;
+
+esac
+
+done
 
 }
 
 # Create Node
 create_node() {
 
-echo -e "${BLUE}Input Domain Panel${NC}"
-read -p "Domain : " domain
+echo ""
+read -p "Masukkan domain panel: " domain
 
-cd /var/www/pterodactyl || { echo "Folder panel tidak ditemukan"; exit 1; }
+cd /var/www/pterodactyl || { echo "Panel tidak ditemukan"; exit 1; }
 
 php artisan p:location:make <<EOF
-SimexCogan
+Thomz
 Auto Installer
 EOF
 
 php artisan p:node:make <<EOF
-NODE-JS
-Node By Simex
+NodeJS
+Node by Thomz
 1
 https
 $domain
@@ -97,8 +117,6 @@ no
 EOF
 
 echo -e "${GREEN}NODE BERHASIL DIBUAT${NC}"
-sleep 2
-
 }
 
 # MAIN
@@ -115,7 +133,7 @@ echo "2. Create Node"
 echo "x. Exit"
 echo ""
 
-read -p "Pilih Menu : " menu
+read -p "Pilih menu: " menu
 
 case $menu in
 
